@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Short URL</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -29,13 +25,7 @@
       margin-bottom: 30px;
       text-align: center;
     }
-
-    .logo span {
-      font-size: 1rem;
-      font-weight: 400;
-      color: #555;
-      margin-left: 6px;
-    }
+    .logo span { font-size: 1rem; font-weight: 400; color: #555; margin-left: 6px; }
 
     .card {
       background: #fff;
@@ -46,14 +36,7 @@
       max-width: 520px;
       text-align: center;
     }
-
-    .card h1 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 28px;
-      line-height: 1.3;
-    }
+    .card h1 { font-size: 1.6rem; font-weight: 600; color: #333; margin-bottom: 28px; line-height: 1.3; }
 
     .input-group {
       display: flex;
@@ -62,7 +45,6 @@
       overflow: hidden;
       margin-bottom: 20px;
     }
-
     .input-group input {
       flex: 1;
       padding: 14px 16px;
@@ -71,11 +53,7 @@
       font-size: 1rem;
       color: #333;
     }
-
-    .input-group input::placeholder {
-      color: #999;
-    }
-
+    .input-group input::placeholder { color: #999; }
     .input-group button {
       background: #1a73e8;
       color: white;
@@ -87,22 +65,10 @@
       transition: background 0.2s;
       white-space: nowrap;
     }
+    .input-group button:hover { background: #1557b0; }
+    .input-group button:disabled { background: #9bbcf0; cursor: not-allowed; }
 
-    .input-group button:hover {
-      background: #1557b0;
-    }
-
-    .input-group button:disabled {
-      background: #9bbcf0;
-      cursor: not-allowed;
-    }
-
-    .desc {
-      font-size: 0.95rem;
-      color: #555;
-      line-height: 1.6;
-      margin-top: 8px;
-    }
+    .desc { font-size: 0.95rem; color: #555; line-height: 1.6; margin-top: 8px; }
 
     .result {
       margin-top: 24px;
@@ -111,17 +77,8 @@
       border-radius: 8px;
       display: none;
     }
-
-    .result.show {
-      display: block;
-    }
-
-    .result p {
-      font-size: 0.9rem;
-      color: #555;
-      margin-bottom: 10px;
-    }
-
+    .result.show { display: block; }
+    .result p { font-size: 0.9rem; color: #555; margin-bottom: 10px; }
     .result a {
       color: #1a73e8;
       font-weight: 600;
@@ -129,11 +86,7 @@
       text-decoration: none;
       cursor: pointer;
     }
-
-    .result a:hover {
-      text-decoration: underline;
-    }
-
+    .result a:hover { text-decoration: underline; }
     .copy-btn {
       margin-top: 12px;
       background: #1a73e8;
@@ -144,42 +97,33 @@
       font-size: 0.9rem;
       cursor: pointer;
     }
+    .copy-btn:hover { background: #1557b0; }
 
-    .copy-btn:hover {
-      background: #1557b0;
-    }
+    .footer-note { margin-top: 40px; font-size: 0.85rem; color: #888; text-align: center; }
 
-    .footer-note {
-      margin-top: 40px;
-      font-size: 0.85rem;
-      color: #888;
-      text-align: center;
-    }
-
-    /* ===== Modal Konfirmasi Akses ===== */
+    /* ===== OVERLAY IKLAN WAJIB ===== */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(245, 247, 250, 0.95);
+      background: rgba(245, 247, 250, 0.99);
       display: none;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       z-index: 9999;
       padding: 20px;
+      overflow-y: auto;
     }
-
-    .overlay.show {
-      display: flex;
-    }
+    .overlay.show { display: flex; }
 
     .confirm-card {
       background: #fff;
       border-radius: 16px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-      padding: 40px 28px 32px;
+      padding: 32px 24px 28px;
       width: 100%;
-      max-width: 360px;
+      max-width: 720px;
       text-align: center;
+      margin: auto;
     }
 
     .confirm-icon {
@@ -190,31 +134,66 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 20px;
+      margin: 0 auto 18px;
     }
+    .confirm-icon svg { width: 28px; height: 28px; fill: white; }
 
-    .confirm-icon svg {
-      width: 28px;
-      height: 28px;
-      fill: white;
+    .confirm-card h2 { font-size: 1.35rem; font-weight: 600; color: #222; margin-bottom: 10px; }
+    .confirm-card p { font-size: 0.95rem; color: #666; line-height: 1.55; margin-bottom: 18px; }
+
+    /* Status iklan */
+    .ad-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff4e5;
+      color: #b45309;
+      border: 1px solid #fcd9a8;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+      transition: all 0.3s;
     }
-
-    .confirm-card h2 {
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: #222;
-      margin-bottom: 12px;
+    .ad-status.done {
+      background: #e6f7ec;
+      color: #15803d;
+      border-color: #a7e8bd;
     }
-
-    .confirm-card p {
-      font-size: 0.95rem;
-      color: #666;
-      line-height: 1.55;
-      margin-bottom: 28px;
+    .ad-status .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      animation: blink 1s infinite;
     }
+    .ad-status.done .dot { background: #16a34a; animation: none; }
+    @keyframes blink { 50% { opacity: 0.3; } }
 
+    /* Area iklan */
+    .ads-area {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .ads-area .ad-slot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 50px;
+      overflow: hidden;
+    }
+    .ads-area iframe { max-width: 100%; border: 0; }
+
+    /* Tombol Lanjutkan */
     .confirm-btn {
       width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
       background: #1a73e8;
       color: white;
       border: none;
@@ -229,17 +208,12 @@
       gap: 10px;
       transition: background 0.2s;
     }
-
-    .confirm-btn:hover {
-      background: #1557b0;
-    }
-
+    .confirm-btn:hover:not(:disabled) { background: #1557b0; }
     .confirm-btn:disabled {
+      background: #9bbcf0;
       cursor: not-allowed;
-      opacity: 0.9;
     }
 
-    /* Spinner */
     .spinner {
       width: 18px;
       height: 18px;
@@ -249,17 +223,14 @@
       animation: spin 0.7s linear infinite;
       display: none;
     }
+    .confirm-btn.loading .spinner { display: block; }
+    .confirm-btn.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .confirm-btn.loading .spinner {
-      display: block;
-    }
-
-    .confirm-btn.loading .btn-text {
-      display: none;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .timer-text {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -294,7 +265,7 @@
     Demo frontend only • Tidak menyimpan data
   </p>
 
-  <!-- Modal Konfirmasi Akses -->
+  <!-- ===== OVERLAY IKLAN WAJIB ===== -->
   <div class="overlay" id="confirmOverlay">
     <div class="confirm-card">
       <div class="confirm-icon">
@@ -302,17 +273,84 @@
           <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
         </svg>
       </div>
-      <h2>Konfirmasi Akses</h2>
-      <p>Halaman sedang disiapkan. Silakan klik tombol di bawah untuk melanjutkan ke situs.</p>
-      <button class="confirm-btn" id="confirmBtn" onclick="continueToSite()">
+      <h2>Menyiapkan Tautan...</h2>
+      <p>Klik iklan di bawah ini untuk membuka akses ke situs tujuan.</p>
+
+      <!-- Status iklan -->
+      <div class="ad-status" id="adStatus">
+        <span class="dot"></span>
+        <span id="adStatusText">Menunggu klik iklan...</span>
+      </div>
+
+      <!-- Area iklan -->
+      <div class="ads-area" id="adsArea">
+        <div class="ad-slot">
+          <div id="container-bbbab7c19f4caf46ed8385f0bca11818"></div>
+        </div>
+        <div class="ad-slot" id="adSlot300x250"></div>
+        <div class="ad-slot" id="adSlot728x90"></div>
+        <div class="ad-slot" id="adSlot320x50"></div>
+        <div class="ad-slot" id="adSlot160x300"></div>
+        <div class="ad-slot" id="adSlot160x600"></div>
+      </div>
+
+      <!-- Tombol Lanjutkan (baru aktif setelah user klik iklan) -->
+      <button class="confirm-btn" id="confirmBtn" disabled onclick="continueToSite()">
         <div class="spinner"></div>
-        <span class="btn-text">Lanjutkan</span>
+        <span class="btn-text">Lanjutkan ke Situs</span>
       </button>
+      <p class="timer-text" id="timerText">Klik salah satu iklan di atas untuk membuka akses</p>
     </div>
   </div>
 
+  <!-- ============ SCRIPT IKLAN ============ -->
+  <script>
+    let adsLoaded = false;
+
+    function loadAds() {
+      if (adsLoaded) return;
+      adsLoaded = true;
+
+      // --- Script pendukung ---
+      const directScripts = [
+        'https://bicea.org/14/a38927a40b329586703d8206dcf42875',
+        'https://afders.org/1/517793d2dea8235f5335a66db9abcdce',
+        'https://bicea.org/21/bbbab7c19f4caf46ed8385f0bca11818'
+      ];
+      directScripts.forEach(src => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = true;
+        s.setAttribute('data-cfasync', 'false');
+        document.body.appendChild(s);
+      });
+
+      // --- Helper banner ---
+      function addBanner(key, w, h, slotId) {
+        const slot = document.getElementById(slotId);
+        if (!slot) return;
+        const opt = document.createElement('script');
+        opt.text = `atOptions = {'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};`;
+        slot.appendChild(opt);
+        const s = document.createElement('script');
+        s.src = `https://bicea.org/22/${key}`;
+        s.async = true;
+        s.setAttribute('data-cfasync', 'false');
+        slot.appendChild(s);
+      }
+
+      addBanner('58ff01a2cc40fcb7c5d9c8f7ae729b9f', 300, 250, 'adSlot300x250');
+      addBanner('3266688aae803dffea69926f043664d5', 728, 90,  'adSlot728x90');
+      addBanner('b2dab960f15a25cfc1c514dfe229e878', 320, 50,  'adSlot320x50');
+      addBanner('e9ff807abadde4b328d824e2a1940fee', 160, 300, 'adSlot160x300');
+      addBanner('e750b7e4e88c87ca230496649f14af8a', 160, 600, 'adSlot160x600');
+    }
+  </script>
+
+  <!-- ============ LOGIKA UTAMA ============ -->
   <script>
     let targetUrl = '';
+    let adClicked = false;
 
     function generateCode(length = 6) {
       const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -330,35 +368,24 @@
       const shortLink = document.getElementById('shortLink');
 
       const url = input.value.trim();
+      if (!url) { alert('Silakan masukkan URL terlebih dahulu'); return; }
 
-      if (!url) {
-        alert('Silakan masukkan URL terlebih dahulu');
-        return;
-      }
-
-      // Validasi sederhana
-      try {
-        new URL(url.startsWith('http') ? url : 'https://' + url);
-      } catch {
-        alert('URL tidak valid');
-        return;
-      }
+      try { new URL(url.startsWith('http') ? url : 'https://' + url); }
+      catch { alert('URL tidak valid'); return; }
 
       btn.disabled = true;
       btn.textContent = 'Processing...';
 
-      // Simulasi delay
       setTimeout(() => {
         const code = generateCode();
         const short = `https://shorturl.at/${code}`;
-
         targetUrl = url.startsWith('http') ? url : 'https://' + url;
 
         shortLink.href = '#';
         shortLink.textContent = short;
         shortLink.onclick = function(e) {
           e.preventDefault();
-          showConfirm();
+          openAdGate();
         };
 
         resultBox.classList.add('show');
@@ -367,30 +394,90 @@
       }, 600);
     }
 
-    function showConfirm() {
+    // ===== Buka overlay iklan & paksa user klik iklan dulu =====
+    function openAdGate() {
       const overlay = document.getElementById('confirmOverlay');
       const btn = document.getElementById('confirmBtn');
-      
-      // Reset tombol
+      const btnText = btn.querySelector('.btn-text');
+      const status = document.getElementById('adStatus');
+      const statusText = document.getElementById('adStatusText');
+      const timerText = document.getElementById('timerText');
+
+      // Reset state
+      adClicked = false;
       btn.classList.remove('loading');
-      btn.disabled = false;
-      btn.querySelector('.btn-text').textContent = 'Lanjutkan';
-      
+      btn.disabled = true;
+      btnText.textContent = 'Lanjutkan ke Situs';
+      status.classList.remove('done');
+      statusText.textContent = 'Menunggu klik iklan...';
+      timerText.textContent = 'Klik salah satu iklan di atas untuk membuka akses';
+
       overlay.classList.add('show');
+
+      // Muat iklan
+      loadAds();
+
+      // Pasang listener setelah iklan termuat (iframe iklan tak bisa dideteksi kliknya,
+      // jadi kita pasang listener klik pada seluruh area overlay/ads)
+      setTimeout(attachAdClickListeners, 800);
     }
 
-    function continueToSite() {
+    // ===== Deteksi user klik iklan =====
+    function attachAdClickListeners() {
+      const adsArea = document.getElementById('adsArea');
+      const allIframes = document.querySelectorAll('.ads-area iframe');
+
+      // Strategi 1: klik pada iframe iklan (jika browser mengizinkan focus event)
+      allIframes.forEach(iframe => {
+        iframe.addEventListener('mouseenter', markAdClicked);
+      });
+
+      // Strategi 2: klik di area ads (fallback umum dipakai shortlink site)
+      adsArea.addEventListener('click', function(e) {
+        // Cek apakah klik berasal dari slot iklan
+        if (e.target.closest('.ad-slot')) {
+          markAdClicked();
+        }
+      });
+
+      // Strategi 3: klik pada container div iklan
+      document.querySelectorAll('.ad-slot').forEach(slot => {
+        slot.addEventListener('click', markAdClicked);
+      });
+    }
+
+    // ===== Tandai iklan sudah diklik → aktifkan tombol =====
+    function markAdClicked() {
+      if (adClicked) return;
+      adClicked = true;
+
+      const status = document.getElementById('adStatus');
+      const statusText = document.getElementById('adStatusText');
       const btn = document.getElementById('confirmBtn');
-      
-      // Ubah jadi loading seperti di screenshot
+      const timerText = document.getElementById('timerText');
+
+      status.classList.add('done');
+      statusText.textContent = 'Iklan diklik ✓ Akses terbuka';
+      timerText.textContent = 'Klik tombol di bawah untuk menuju situs tujuan';
+
+      btn.disabled = false;
+    }
+
+    // ===== Klik Lanjutkan → redirect ke web tujuan =====
+    function continueToSite() {
+      if (!adClicked) {
+        alert('Silakan klik iklan terlebih dahulu untuk membuka akses.');
+        return;
+      }
+
+      const btn = document.getElementById('confirmBtn');
       btn.classList.add('loading');
       btn.disabled = true;
       btn.querySelector('.btn-text').textContent = 'Memuat...';
 
-      // Simulasi loading lalu redirect
       setTimeout(() => {
         window.location.href = targetUrl;
-      }, 1500);
+      }, 800);
     }
 
     function copyLink() {
@@ -402,17 +489,12 @@
       });
     }
 
-    // Enter key support
     document.getElementById('longUrl').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') shortenUrl();
     });
 
-    // Tutup overlay jika klik di luar card (opsional)
-    document.getElementById('confirmOverlay').addEventListener('click', function(e) {
-      if (e.target === this) {
-        this.classList.remove('show');
-      }
-    });
+    // Overlay sengaja TIDAK bisa ditutup dengan klik di luar,
+    // supaya user wajib interaksi dengan iklan dulu.
   </script>
 </body>
 </html>
