@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Short URL</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    .logo {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #1a73e8;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .logo span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #555;
+      margin-left: 6px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    .card h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 28px;
+      line-height: 1.3;
+    }
+
+    .input-group {
+      display: flex;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 14px 16px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .input-group input::placeholder {
+      color: #999;
+    }
+
+    .input-group button {
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 0 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .input-group button:hover {
+      background: #1557b0;
+    }
+
+    .input-group button:disabled {
+      background: #9bbcf0;
+      cursor: not-allowed;
+    }
+
+    .desc {
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .result {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f0f7ff;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .result a {
+      color: #1a73e8;
+      font-weight: 600;
+      word-break: break-all;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .result a:hover {
+      text-decoration: underline;
+    }
+
+    .copy-btn {
+      margin-top: 12px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #1557b0;
+    }
+
+    .footer-note {
+      margin-top: 40px;
+      font-size: 0.85rem;
+      color: #888;
+      text-align: center;
+    }
+
+    /* ===== Modal Konfirmasi Akses ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(245, 247, 250, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .confirm-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      padding: 40px 28px 32px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .confirm-icon {
+      width: 56px;
+      height: 56px;
+      background: #1a73e8;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .confirm-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .confirm-card h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 12px;
+    }
+
+    .confirm-card p {
+      font-size: 0.95rem;
+      color: #666;
+      line-height: 1.55;
+      margin-bottom: 28px;
+    }
+
+    .confirm-btn {
+      width: 100%;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s;
+    }
+
+    .confirm-btn:hover {
+      background: #1557b0;
+    }
+
+    .confirm-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .confirm-btn.loading .spinner {
+      display: block;
+    }
+
+    .confirm-btn.loading .btn-text {
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    Short URL <span>by You</span>
+  </div>
+
+  <div class="card">
+    <h1>Paste the URL to be<br>shortened</h1>
+
+    <div class="input-group">
+      <input type="url" id="longUrl" placeholder="Enter the link here" autocomplete="off">
+      <button id="shortenBtn" onclick="shortenUrl()">Shorten URL</button>
+    </div>
+
+    <p class="desc">
+      ShortURL is a free tool to shorten URLs and generate short links.<br>
+      URL shortener allows you to create a shortened link making it easy to share.
+    </p>
+
+    <div class="result" id="resultBox">
+      <p>Your short link:</p>
+      <a id="shortLink" href="#"></a>
+      <br>
+      <button class="copy-btn" onclick="copyLink()">Copy</button>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    Demo frontend only • Tidak menyimpan data
+  </p>
+
+  <!-- Modal Konfirmasi Akses -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="confirm-card">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+      </div>
+      <h2>Konfirmasi Akses</h2>
+      <p>Halaman sedang disiapkan. Silakan klik tombol di bawah untuk melanjutkan ke situs.</p>
+      <button class="confirm-btn" id="confirmBtn" onclick="continueToSite()">
+        <div class="spinner"></div>
+        <span class="btn-text">Lanjutkan</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let targetUrl = '';
+
+    function generateCode(length = 6) {
+      const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = '';
+      for (let i = 0; i < length; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+
+    function shortenUrl() {
+      const input = document.getElementById('longUrl');
+      const btn = document.getElementById('shortenBtn');
+      const resultBox = document.getElementById('resultBox');
+      const shortLink = document.getElementById('shortLink');
+
+      const url = input.value.trim();
+
+      if (!url) {
+        alert('Silakan masukkan URL terlebih dahulu');
+        return;
+      }
+
+      // Validasi sederhana
+      try {
+        new URL(url.startsWith('http') ? url : 'https://' + url);
+      } catch {
+        alert('URL tidak valid');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      // Simulasi delay
+      setTimeout(() => {
+        const code = generateCode();
+        const short = `https://shorturl.at/${code}`;
+
+        targetUrl = url.startsWith('http') ? url : 'https://' + url;
+
+        shortLink.href = '#';
+        shortLink.textContent = short;
+        shortLink.onclick = function(e) {
+          e.preventDefault();
+          showConfirm();
+        };
+
+        resultBox.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Shorten URL';
+      }, 600);
+    }
+
+    function showConfirm() {
+      const overlay = document.getElementById('confirmOverlay');
+      const btn = document.getElementById('confirmBtn');
+      
+      // Reset tombol
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btn.querySelector('.btn-text').textContent = 'Lanjutkan';
+      
+      overlay.classList.add('show');
+    }
+
+    function continueToSite() {
+      const btn = document.getElementById('confirmBtn');
+      
+      // Ubah jadi loading seperti di screenshot
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.querySelector('.btn-text').textContent = 'Memuat...';
+
+      // Simulasi loading lalu redirect
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 1500);
+    }
+
+    function copyLink() {
+      const link = document.getElementById('shortLink').textContent;
+      navigator.clipboard.writeText(link).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+      });
+    }
+
+    // Enter key support
+    document.getElementById('longUrl').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') shortenUrl();
+    });
+
+    // Tutup overlay jika klik di luar card (opsional)
+    document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
